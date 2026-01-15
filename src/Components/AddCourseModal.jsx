@@ -118,7 +118,7 @@ const AddCourseModal = ({ onAdded }) => {
           {/* CATEGORY */}
           <select
             name="category"
-            className="select select-bordered w-full rounded-xl"
+            className="select select-bordered ml-45 w-full rounded-xl"
           >
             <option>Web Development</option>
             <option>Frontend Development</option>
@@ -127,15 +127,7 @@ const AddCourseModal = ({ onAdded }) => {
             <option>DevOps</option>
           </select>
 
-          {/* FEATURED */}
-          <label className="flex items-center gap-3 text-sm font-medium">
-            <input
-              type="checkbox"
-              name="isFeatured"
-              className="checkbox checkbox-primary"
-            />
-            Featured Course
-          </label>
+          
 
           {/* DESCRIPTION */}
           <textarea
@@ -157,7 +149,7 @@ const AddCourseModal = ({ onAdded }) => {
             </p>
           </div>
 
-          {/* 🔥 GRADIENT SUBMIT BUTTON */}
+          {/* GRADIENT SUBMIT BUTTON */}
           <motion.button
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}

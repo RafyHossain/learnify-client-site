@@ -1,10 +1,56 @@
-import React from 'react';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import CourseCard from "./CourseCard";
+import { motion } from "framer-motion";
 
 const PopularCourses = () => {
+  const [popularCourses, setPopularCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios.get("http://localhost:3000/courses").then(res => {
+      const sorted = res.data
+        .sort((a, b) => b.enrolledCount - a.enrolledCount)
+        .slice(0, 6);
+
+      setPopularCourses(sorted);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return <p className="text-center mt-10">Loading...</p>;
+  }
+
   return (
-    <div>
-      
-    </div>
+    <section className="py-20 bg-base-100">
+      <div className="max-w-7xl mx-auto px-6">
+        
+        {/* TITLE */}
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-3xl font-bold text-center mb-12"
+        >
+           Popular Courses
+        </motion.h2>
+
+        {/* GRID */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {popularCourses.map(course => (
+            <motion.div
+              key={course._id}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4 }}
+            >
+              <CourseCard course={course} />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 
