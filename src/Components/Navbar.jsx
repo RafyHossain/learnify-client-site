@@ -1,159 +1,193 @@
-import React, { use } from "react";
-import logo from "../assets/logo.png";
-import { Link, NavLink } from "react-router-dom";
-
+import React, { useContext } from "react";
+import { NavLink, Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { FaUser } from "react-icons/fa";
 import Swal from "sweetalert2";
+import logo from "../assets/logo.png";
 import { AuthContext } from "../Context/AuthProvider";
 
 const Navbar = () => {
-  const { user, logOut } = use(AuthContext);
-
-  // Modern active link style
-  const navLinkClass = ({ isActive }) =>
-    `relative px-2 py-1 transition-all duration-300
-     ${
-       isActive
-         ? "text-primary font-semibold after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-full after:h-[2px] after:bg-primary after:rounded-full"
-         : "text-gray-600 hover:text-primary"
-     }`;
+  const { user, logOut } = useContext(AuthContext);
 
   const handleLogOut = () => {
     logOut()
       .then(() => {
         Swal.fire({
-          title: "Log Out Successful!",
+          title: "Logged Out",
           icon: "success",
-          timer: 1500,
+          timer: 1200,
           showConfirmButton: false,
         });
       })
-      .catch((error) => console.log(error));
+      .catch(console.log);
   };
 
   return (
-    <div
-      data-aos="fade-down"
-      className="navbar bg-base-100 shadow-sm w-full px-4 md:px-8 sticky top-0 z-50"
-    >
-      {/* LEFT */}
-      <div className="navbar-start">
-        <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h8m-8 6h16"
-              />
-            </svg>
-          </div>
+    <header className="sticky top-0 z-50 backdrop-blur-xl bg-base-100/70 border-b border-base-300">
+      <div className="navbar max-w-7xl mx-auto px-4 md:px-8">
 
-          {/* MOBILE MENU */}
-          <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box z-20 mt-3 w-52 p-3 shadow animate__animated animate__fadeInDown">
-            <li>
-              <NavLink to="/" end className={navLinkClass}>
-                Home
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/courses" className={navLinkClass}>
-                Courses
-              </NavLink>
-            </li>
-            {user && (
-              <li>
-                <NavLink to="/dashboard" className={navLinkClass}>
-                  Dashboard
-                </NavLink>
-              </li>
-            )}
-          </ul>
+        {/* ================= LEFT : LOGO ================= */}
+        <div className="navbar-start">
+          <Link to="/" className="flex items-center gap-2">
+            <img
+              src={logo}
+              alt="Learnify"
+              className="w-14 h-14 rounded-xl object-cover"
+            />
+
+            {/* 🔥 Animated Gradient Brand Name */}
+            <span
+              className="
+                text-xl font-extrabold
+                bg-gradient-to-r from-primary via-secondary to-primary
+                bg-[length:200%_200%]
+                bg-clip-text text-transparent
+                animate-gradient
+              "
+            >
+              Learnify
+            </span>
+          </Link>
         </div>
 
-        <img
-          src={logo}
-          alt="Logo"
-          className="w-[70px] h-[60px] ml-2 rounded-full object-fill"
-        />
-      </div>
+        {/* ================= CENTER : ANIMATED TOGGLE ================= */}
+        <div className="navbar-center hidden lg:flex">
+          <div className="relative flex gap-2 bg-base-200/70 backdrop-blur-md p-1.5 rounded-full">
 
-      {/* CENTER */}
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal gap-6 text-sm font-medium">
-          <li>
-            <NavLink to="/" end className={navLinkClass}>
-              Home
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/courses" className={navLinkClass}>
-              Courses
-            </NavLink>
-          </li>
-          {user && (
-            <li>
-              <NavLink to="/dashboard" className={navLinkClass}>
-                Dashboard
-              </NavLink>
-            </li>
-          )}
-        </ul>
-      </div>
-
-      {/* RIGHT */}
-      <div className="navbar-end flex items-center gap-3">
-        {user ? (
-          <>
-            <div
-              className="tooltip tooltip-left"
-              data-tip={user?.displayName || "User"}
-            >
-              {user?.photoURL ? (
-                <img
-                  src={user.photoURL}
-                  alt="User"
-                  className="w-11 h-11 rounded-full object-cover border cursor-pointer"
-                />
-              ) : (
-                <div className="w-11 h-11 rounded-full border flex items-center justify-center cursor-pointer">
-                  <FaUser />
-                </div>
+            {/* HOME */}
+            <NavLink to="/" end className="relative">
+              {({ isActive }) => (
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="relative px-5 py-2 rounded-full text-sm font-medium cursor-pointer"
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-secondary"
+                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    />
+                  )}
+                  <span
+                    className={`relative z-10 ${
+                      isActive ? "text-white" : "text-base-content/70"
+                    }`}
+                  >
+                    Home
+                  </span>
+                </motion.div>
               )}
-            </div>
+            </NavLink>
 
-            <button
-              onClick={handleLogOut}
-              className="btn btn-primary rounded-xl btn-sm px-5 animate__animated hover:animate__pulse"
-            >
-              Log Out
-            </button>
-          </>
-        ) : (
-          <>
-            <Link
-              to="/auth/login"
-              className="btn btn-primary rounded-xl btn-sm px-5"
-            >
-              Login
-            </Link>
-            <Link
-              to="/auth/register"
-              className="btn btn-primary rounded-xl btn-sm px-5"
-            >
-              Sign Up
-            </Link>
-          </>
-        )}
+            {/* COURSES */}
+            <NavLink to="/courses" className="relative">
+              {({ isActive }) => (
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="relative px-5 py-2 rounded-full text-sm font-medium cursor-pointer"
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-secondary"
+                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    />
+                  )}
+                  <span
+                    className={`relative z-10 ${
+                      isActive ? "text-white" : "text-base-content/70"
+                    }`}
+                  >
+                    Courses
+                  </span>
+                </motion.div>
+              )}
+            </NavLink>
+
+            {/* DASHBOARD */}
+            {user && (
+              <NavLink to="/dashboard" className="relative">
+                {({ isActive }) => (
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    className="relative px-5 py-2 rounded-full text-sm font-medium cursor-pointer"
+                  >
+                    {isActive && (
+                      <motion.span
+                        layoutId="nav-pill"
+                        className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-secondary"
+                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                      />
+                    )}
+                    <span
+                      className={`relative z-10 ${
+                        isActive ? "text-white" : "text-base-content/70"
+                      }`}
+                    >
+                      Dashboard
+                    </span>
+                  </motion.div>
+                )}
+              </NavLink>
+            )}
+          </div>
+        </div>
+
+        {/* ================= RIGHT : AUTH ================= */}
+        <div className="navbar-end gap-3">
+          {user ? (
+            <>
+              <div
+                className="tooltip tooltip-bottom"
+                data-tip={user?.displayName || "User"}
+              >
+                {user?.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt="User"
+                    className="w-10 h-10 rounded-full object-cover border"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full border flex items-center justify-center">
+                    <FaUser />
+                  </div>
+                )}
+              </div>
+
+              <button
+                onClick={handleLogOut}
+                className="px-5 py-2 rounded-xl text-sm font-medium
+                  bg-gradient-to-r from-primary to-secondary
+                  text-white shadow-md hover:shadow-xl hover:scale-[1.03]
+                  transition-all"
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/auth/login"
+                className="px-5 py-2 rounded-xl text-sm font-medium
+                  border border-primary/30 hover:border-primary transition-all"
+              >
+                Login
+              </Link>
+
+              <Link
+                to="/auth/register"
+                className="px-5 py-2 rounded-xl text-sm font-medium
+                  bg-gradient-to-r from-primary to-secondary
+                  text-white shadow-md hover:shadow-xl hover:scale-[1.03]
+                  transition-all"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </header>
   );
 };
 

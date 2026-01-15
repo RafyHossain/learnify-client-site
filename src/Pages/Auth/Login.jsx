@@ -1,160 +1,155 @@
-import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router";
+import React, { useContext } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthProvider";
-import { IoIosEyeOff, IoMdEye } from "react-icons/io";
+import axiosPublic from "../../hooks/useAxiosPublic";
 import Swal from "sweetalert2";
+import { motion } from "framer-motion";
+import { FaGoogle } from "react-icons/fa";
 
 const Login = () => {
-  const [emailValue, setEmailValue] = useState("");
-
-  const location = useLocation();
+  const { logIn, googleLogIn, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { setUser, logIn, googleLogIn } = React.useContext(AuthContext);
+  const location = useLocation();
 
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleLogin = (event) => {
-    event.preventDefault();
-    const email = event.target.email.value;
-    const password = event.target.password.value;
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
 
     logIn(email, password)
-      .then((result) => {
-        const user = result.user;
-        setUser(user);
+      .then((res) => {
+        setUser(res.user);
 
         Swal.fire({
-          title: "Login Successful!",
           icon: "success",
-          timer: 1500,
+          title: "Login Successful",
+          timer: 1400,
           showConfirmButton: false,
         });
 
         navigate(location.state || "/");
       })
       .catch(() => {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Invalid email or password",
-        });
+        Swal.fire("Error", "Invalid email or password", "error");
       });
-
-    event.target.reset();
   };
 
   const handleGoogleLogin = () => {
-    googleLogIn()
-      .then((result) => {
-        setUser(result.user);
+    googleLogIn().then((res) => {
+      const user = res.user;
+      setUser(user);
 
-        Swal.fire({
-          title: "Login Successful!",
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false,
-        });
+      const userInfo = {
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoURL,
+        role: "student",
+      };
 
-        navigate(location.state || "/");
-      })
-      .catch(() => {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Google login failed",
-        });
+      axiosPublic.post("/users", userInfo);
+
+      Swal.fire({
+        icon: "success",
+        title: "Login Successful",
+        timer: 1400,
+        showConfirmButton: false,
       });
+
+      navigate(location.state || "/");
+    });
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center px-4 bg-base-200">
-      <div
-        data-aos="zoom-in"
-        className="
-          card
-          bg-base-100
-          w-full
-          max-w-sm
-          shadow-2xl
-          p-6
-          animate__animated animate__fadeInUp
-        "
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-base-200 to-secondary/10 px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-md rounded-2xl backdrop-blur-xl bg-base-100/80 shadow-xl border border-base-300"
       >
-        <h2 className="font-semibold text-2xl text-center mb-4">
-          Login Your Account
-        </h2>
+        <div className="p-8">
+          {/* TITLE */}
+          <motion.h2
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-3xl font-extrabold text-center mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+          >
+            Welcome Back
+          </motion.h2>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="label">Email</label>
+          {/* FORM */}
+          <form onSubmit={handleLogin} className="space-y-4">
             <input
               name="email"
               type="email"
-              className="input input-bordered w-full"
-              placeholder="Email"
-              alue={emailValue}
-              onChange={(e) => setEmailValue(e.target.value)}
+              placeholder="Email Address"
+              className="input input-bordered w-full rounded-xl"
               required
             />
-          </div>
 
-          <div className="relative">
-            <label className="label">Password</label>
             <input
               name="password"
-              type={showPassword ? "text" : "password"}
-              className="input input-bordered w-full pr-10"
+              type="password"
               placeholder="Password"
+              className="input input-bordered w-full rounded-xl"
               required
             />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-[35px] cursor-pointer text-gray-500"
+
+            <div className="text-right">
+            <Link
+              to="/auth/forgot-password"
+              state={{ email: "" }}
+              className="text-sm text-primary hover:underline"
             >
-              {showPassword ? <IoIosEyeOff size={20} /> : <IoMdEye size={20} />}
-            </span>
+              Forgot password?
+            </Link>
           </div>
 
-         <div className="mb-3">
-           <Link
-            to="/auth/forgot-password"
-            state={{ email: emailValue }}
-            className="link link-hover text-sm text-primary "
-          >
-            Forgot password?
-          </Link>
-         </div>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="w-full py-3 rounded-xl font-semibold text-white
+                bg-gradient-to-r from-primary to-secondary
+                shadow-lg hover:shadow-primary/40 transition-all"
+            >
+              Login
+            </motion.button>
+          </form>
 
-          <button
-            type="submit"
-            className="btn btn-primary w-full animate__animated hover:animate__pulse"
-          >
-            Login
-          </button>
+          {/* DIVIDER */}
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-base-300"></div>
+            <span className="text-sm text-base-content/60">or</span>
+            <div className="flex-1 h-px bg-base-300"></div>
+          </div>
 
-          <p className="text-center font-semibold">or</p>
-
-          <button
-            type="button"
+          {/* GOOGLE LOGIN */}
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={handleGoogleLogin}
-            className="btn bg-white text-black border w-full flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-xl font-medium
+              flex items-center justify-center gap-3
+              border border-base-300 bg-base-100
+              hover:bg-base-200 transition-all"
           >
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-              className="w-5 h-5"
-            />
-            Login with Google
-          </button>
-        </form>
+            <FaGoogle className="text-lg" />
+            Continue with Google
+          </motion.button>
 
-        <p className="text-center pt-5 text-sm">
-          Don't have an account?{" "}
-          <Link to="/auth/register" className="text-primary font-semibold">
-            Register
-          </Link>
-        </p>
-      </div>
+          {/* FOOTER */}
+          <p className="text-center mt-6 text-sm text-base-content/70">
+            New to Learnify?{" "}
+            <Link
+              to="/auth/register"
+              className="font-semibold text-primary hover:underline"
+            >
+              Create an account
+            </Link>
+          </p>
+        </div>
+      </motion.div>
     </div>
   );
 };

@@ -1,69 +1,110 @@
-import { createBrowserRouter } from "react-router";
-import { RouterProvider } from "react-router/dom";
+import { createBrowserRouter } from "react-router-dom";
+
+/* ========== Layouts ========== */
 import HomeLayout from "../Layout/HomeLayout";
 import AuthLayout from "../Layout/AuthLayout";
+import DashboardLayout from "../Pages/DashboardLayout";
+
+/* ========== Pages ========== */
+import Home from "../Pages/Home";
+import Courses from "../Pages/Courses";
+import CourseDetails from "../Components/CourseDetails";
+
+/* ========== Auth Pages ========== */
 import Register from "../Pages/Auth/Register";
 import Login from "../Pages/Auth/Login";
-import Home from "../Pages/Home";
-import Hero from "../Components/Hero";
-import PrivateRoutes from "./PrivateRoutes";
-import SkillDetails from "../Pages/Courses";
-import MyProfile from "../Pages/DashboardLayout";
-import Loading from "../Components/Loading";
 import ForgotPassword from "../Pages/Auth/ForgotPassword";
-import Dashboard from "../Pages/DashboardLayout";
-import Courses from "../Pages/Courses";
-import DashboardLayout from "../Pages/DashboardLayout";
+
+/* ========== Dashboard Pages ========== */
 import EnrolledCourses from "../Components/EnrolledCourses";
-import AddCourse from "../Components/AddCourse";
 import MyCourses from "../Components/MyCourses";
 import Analytics from "../Components/Analytics";
 
+/* ========== Routes ========== */
+import PrivateRoutes from "./PrivateRoutes";
+
 const router = createBrowserRouter([
+  /* ================= HOME ================= */
   {
     path: "/",
-    element: <HomeLayout></HomeLayout>,
+    element: <HomeLayout />,
     children: [
       {
         index: true,
-        
-        Component: Home,
+        element: <Home />,
       },
       {
-        path:"courses",
-        
-        Component:Courses,
+        path: "courses",
+        element: <Courses />,
       },
-     {
-  path: "/dashboard",
-  element:<PrivateRoutes><DashboardLayout></DashboardLayout></PrivateRoutes>,
-  children: [
-    { path: "enrolled-courses", element: <EnrolledCourses></EnrolledCourses> },
-    { path: "add-course", element: <AddCourse></AddCourse> },
-    { path: "my-courses", element: <MyCourses /> },
-    { path: "analytics", element: <Analytics  /> },
-  ],
-}
+      {
+        path: "courses/:id", // ✅ RELATIVE PATH
+        element: (
+          <PrivateRoutes>
+            <CourseDetails />
+          </PrivateRoutes>
+        ),
+      },
     ],
   },
+
+  /* ================= DASHBOARD ================= */
   {
-    path: "/auth",
-    element: <AuthLayout></AuthLayout>,
+    path: "/dashboard",
+    element: (
+      <PrivateRoutes>
+        <DashboardLayout />
+      </PrivateRoutes>
+    ),
     children: [
       {
-        path: "/auth/register",
-        Component: Register,
+        index: true, // 🔥 DEFAULT PAGE
+        element: <EnrolledCourses />,
       },
       {
-        path: "/auth/login",
-        Component: Login,
+        path: "enrolled-courses",
+        element: <EnrolledCourses />,
       },
       {
-        path: "/auth/forgot-password",
-        element:<ForgotPassword></ForgotPassword>,
+        path: "my-courses",
+        element: <MyCourses />,
+      },
+      {
+        path: "analytics",
+        element: <Analytics />,
       },
     ],
   },
-  
+
+  /* ================= AUTH ================= */
+  {
+    path: "/auth",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "register",
+        element: <Register />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "forgot-password",
+        element: <ForgotPassword />,
+      },
+    ],
+  },
+
+  /* ================= 404 ================= */
+  {
+    path: "*",
+    element: (
+      <div className="min-h-screen flex items-center justify-center">
+        <h1 className="text-3xl font-bold">404 | Page Not Found</h1>
+      </div>
+    ),
+  },
 ]);
+
 export default router;

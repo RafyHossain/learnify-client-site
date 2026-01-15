@@ -1,30 +1,37 @@
 import React, { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthProvider";
+import axiosPublic from "../../hooks/useAxiosPublic";
 import { IoIosEyeOff, IoMdEye } from "react-icons/io";
 import Swal from "sweetalert2";
+import { motion } from "framer-motion";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { createUser, setUser, updateUser } = useContext(AuthContext);
 
-  const handleRegister = (event) => {
-    event.preventDefault();
-    const name = event.target.name.value;
-    const email = event.target.email.value;
-    const photo = event.target.photoURL.value;
-    const password = event.target.password.value;
+  const { createUser, updateUser, setUser } = useContext(AuthContext);
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+
+    const name = e.target.name.value;
+    const email = e.target.email.value;
+    const photo = e.target.photoURL.value;
+    const password = e.target.password.value;
 
     if (password.length < 6) {
-      return setError("Password must be at least 6 characters long");
+      setError("Password must be at least 6 characters");
+      return;
     }
     if (!/[A-Z]/.test(password)) {
-      return setError("Password must include one uppercase letter");
+      setError("Password must contain at least one uppercase letter");
+      return;
     }
     if (!/[a-z]/.test(password)) {
-      return setError("Password must include one lowercase letter");
+      setError("Password must contain at least one lowercase letter");
+      return;
     }
 
     setError("");
@@ -32,117 +39,134 @@ const Register = () => {
     createUser(email, password)
       .then((result) => {
         const user = result.user;
-
-        updateUser({
+        return updateUser({
           displayName: name,
           photoURL: photo,
-        })
-          .then(() => {
-            setUser({ ...user, displayName: name, photoURL: photo });
-          })
-          .catch(() => {
-            setUser(user);
-          });
+        }).then(() => {
+          setUser({ ...user, displayName: name, photoURL: photo });
 
+          const userInfo = {
+            name,
+            email,
+            photo,
+            role: "student",
+          };
+
+          return axiosPublic.post("/users", userInfo);
+        });
+      })
+      .then((res) => {
         Swal.fire({
           title: "Registration Successful!",
           icon: "success",
-          timer: 1500,
+          timer: 1400,
           showConfirmButton: false,
         });
-
         navigate("/");
       })
       .catch((err) => {
-        setError(err.message);
+        setError(err.message || "Registration failed");
       });
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center px-4 bg-base-200">
-      <div
-        data-aos="zoom-in"
-        className="
-          card
-          bg-base-100
-          w-full
-          max-w-sm
-          shadow-2xl
-          p-6
-          animate__animated animate__fadeInUp
-        "
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-base-200 to-secondary/10 px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-md rounded-2xl backdrop-blur-xl bg-base-100/80 shadow-xl border border-base-300"
       >
-        <h2 className="font-semibold text-2xl text-center mb-4">
-          Register Your Account
-        </h2>
+        <div className="p-8">
+          {/* TITLE */}
+          <motion.h2
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-3xl font-extrabold text-center mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+          >
+            Create Account
+          </motion.h2>
 
-        <form onSubmit={handleRegister} className="space-y-4">
-          <div>
-            <label className="label">Name</label>
+          {/* FORM */}
+          <form onSubmit={handleRegister} className="space-y-4">
             <input
               name="name"
               type="text"
-              className="input input-bordered w-full"
-              placeholder="Your name"
+              placeholder="Full Name"
+              className="input input-bordered w-full rounded-xl focus:outline-primary"
               required
             />
-          </div>
 
-          <div>
-            <label className="label">Email</label>
             <input
               name="email"
               type="email"
-              className="input input-bordered w-full"
-              placeholder="Email"
+              placeholder="Email Address"
+              className="input input-bordered w-full rounded-xl"
               required
             />
-          </div>
 
-          <div>
-            <label className="label">Photo URL (optional)</label>
             <input
               name="photoURL"
               type="text"
-              className="input input-bordered w-full"
-              placeholder="Photo URL"
+              placeholder="Photo URL (optional)"
+              className="input input-bordered w-full rounded-xl"
             />
-          </div>
 
-          <div className="relative">
-            <label className="label">Password</label>
-            <input
-              name="password"
-              type={showPassword ? "text" : "password"}
-              className="input input-bordered w-full pr-10"
-              placeholder="Password"
-              required
-            />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-[35px] cursor-pointer text-gray-500"
+            {/* PASSWORD */}
+            <div className="relative">
+              <input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                className="input input-bordered w-full pr-10 rounded-xl"
+                required
+              />
+              <motion.span
+                whileTap={{ scale: 0.8 }}
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-3 cursor-pointer text-base-content/60"
+              >
+                {showPassword ? <IoIosEyeOff size={20} /> : <IoMdEye size={20} />}
+              </motion.span>
+            </div>
+
+            {/* ERROR */}
+            {error && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-sm text-error"
+              >
+                {error}
+              </motion.p>
+            )}
+
+            {/* BUTTON */}
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              type="submit"
+              className="w-full py-3 rounded-xl font-semibold text-white
+              bg-gradient-to-r from-primary to-secondary
+              shadow-lg hover:shadow-primary/40 transition-all"
             >
-              {showPassword ? <IoIosEyeOff size={20} /> : <IoMdEye size={20} />}
-            </span>
-          </div>
+              Register
+            </motion.button>
+          </form>
 
-          {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
-
-          <button
-            type="submit"
-            className="btn btn-primary w-full animate__animated hover:animate__pulse"
-          >
-            Register
-          </button>
-        </form>
-
-        <p className="text-center pt-5 text-sm">
-          Already have an account?{" "}
-          <Link to="/auth/login" className="text-primary font-semibold">
-            Login
-          </Link>
-        </p>
-      </div>
+          {/* FOOTER */}
+          <p className="text-center mt-6 text-sm text-base-content/70">
+            Already have an account?{" "}
+            <Link
+              to="/auth/login"
+              className="font-semibold text-primary hover:underline"
+            >
+              Login
+            </Link>
+          </p>
+        </div>
+      </motion.div>
     </div>
   );
 };

@@ -1,22 +1,24 @@
 import React, { useContext, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation } from "react-router";
 import { AuthContext } from "../../Context/AuthProvider";
 import Swal from "sweetalert2";
 
 const ForgotPassword = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { forgotPassword } = useContext(AuthContext);
 
   const [email, setEmail] = useState(location.state?.email || "");
+  const [loading, setLoading] = useState(false);
 
   const handleResetPassword = (event) => {
     event.preventDefault();
+    setLoading(true);
 
     forgotPassword(email)
       .then(() => {
         Swal.fire({
           title: "Reset Email Sent!",
+          text: "Check your inbox",
           icon: "success",
           timer: 2000,
           showConfirmButton: false,
@@ -32,32 +34,21 @@ const ForgotPassword = () => {
           title: "Oops...",
           text: "Failed to send reset email",
         });
-      });
-
-    event.target.reset();
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
     <div className="min-h-screen flex justify-center items-center px-4 bg-base-200">
-      <div
-        data-aos="zoom-in"
-        className="
-          card
-          bg-base-100
-          w-full
-          max-w-sm
-          shadow-2xl
-          p-6
-          animate__animated animate__fadeInUp
-        "
-      >
-        <h2 className="font-semibold text-2xl text-center mb-4">
+      <div className="card bg-base-100 w-full max-w-sm shadow-2xl p-6 rounded-2xl">
+        
+        <h2 className="font-semibold text-2xl text-center mb-5">
           Reset Your Password
         </h2>
 
         <form onSubmit={handleResetPassword} className="space-y-4">
           <div>
-            <label className="label">Email</label>
+            <label className="label text-sm font-medium">Email</label>
             <input
               type="email"
               className="input input-bordered w-full"
@@ -70,9 +61,16 @@ const ForgotPassword = () => {
 
           <button
             type="submit"
-            className="btn btn-primary w-full animate__animated hover:animate__pulse"
+            disabled={loading}
+            className="
+              btn w-full rounded-xl
+              bg-gradient-to-r from-primary to-secondary
+              text-white shadow-md
+              hover:shadow-xl hover:scale-[1.02]
+              transition-all
+            "
           >
-            Reset Password
+            {loading ? "Sending..." : "Reset Password"}
           </button>
         </form>
 
