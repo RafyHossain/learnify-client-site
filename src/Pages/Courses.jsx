@@ -109,7 +109,7 @@ const Courses = () => {
           No courses found.
         </p>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {filteredCourses.map(course => (
             <CourseCard key={course._id} course={course} />
           ))}

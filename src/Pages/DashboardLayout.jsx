@@ -47,7 +47,7 @@ const DashboardLayout = () => {
         <div className="flex items-center justify-between mb-6">
           {!collapsed && (
             <h2 className="text-xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Learnify
+              My DashBoard
             </h2>
           )}
 
