@@ -24,8 +24,7 @@ dist-ssr
 *.sw?
 .env
 
-DashboardLayout.jsx
-Dashboard.jsx
+
 EnrolledCourses.jsx
 AddCourseModal.jsx
 

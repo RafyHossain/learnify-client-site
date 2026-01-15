@@ -1,12 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../Context/AuthProvider";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const EnrolledCourses = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [enrollments, setEnrollments] = useState([]);
   const [courses, setCourses] = useState([]);
 
@@ -47,10 +50,31 @@ const EnrolledCourses = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">
-        My Enrolled Courses
-      </h2>
 
+      {/* ===== HEADER BAR ===== */}
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+        <h2 className="text-2xl font-bold">
+          My Enrolled Courses ({enrolledCourses.length})
+        </h2>
+
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => navigate("/courses")}
+          className="
+            flex items-center gap-2
+            px-5 py-2 rounded-xl
+            text-sm font-medium text-white
+            bg-gradient-to-r from-primary to-secondary
+            shadow-md hover:shadow-xl
+            transition-all
+          "
+        >
+          Enroll More <FaArrowRight className="text-xs" />
+        </motion.button>
+      </div>
+
+      {/* ===== TABLE ===== */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -114,7 +138,7 @@ const EnrolledCourses = () => {
               You are not enrolled in any course yet.
             </p>
             <p className="text-sm mt-1">
-              Explore courses and start learning 🚀
+              Click <b>Enroll More</b> to start learning 
             </p>
           </div>
         )}
