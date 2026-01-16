@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthProvider";
 import axiosPublic from "../../hooks/useAxiosPublic";
@@ -11,8 +11,18 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // ✅ Redirect path (course details or home)
+  const from = location.state?.from || "/";
+
+  // ✅ Scroll to top when login page loads
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  /* ================= EMAIL LOGIN ================= */
   const handleLogin = (e) => {
     e.preventDefault();
+
     const email = e.target.email.value;
     const password = e.target.password.value;
 
@@ -27,36 +37,41 @@ const Login = () => {
           showConfirmButton: false,
         });
 
-        navigate(location.state || "/");
+        navigate(from, { replace: true });
       })
       .catch(() => {
         Swal.fire("Error", "Invalid email or password", "error");
       });
   };
 
+  /* ================= GOOGLE LOGIN ================= */
   const handleGoogleLogin = () => {
-    googleLogIn().then((res) => {
-      const user = res.user;
-      setUser(user);
+    googleLogIn()
+      .then((res) => {
+        const user = res.user;
+        setUser(user);
 
-      const userInfo = {
-        name: user.displayName,
-        email: user.email,
-        photo: user.photoURL,
-        role: "student",
-      };
+        const userInfo = {
+          name: user.displayName,
+          email: user.email,
+          photo: user.photoURL,
+          role: "student",
+        };
 
-      axiosPublic.post("/users", userInfo);
+        axiosPublic.post("/users", userInfo);
 
-      Swal.fire({
-        icon: "success",
-        title: "Login Successful",
-        timer: 1400,
-        showConfirmButton: false,
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful",
+          timer: 1400,
+          showConfirmButton: false,
+        });
+
+        navigate(from, { replace: true });
+      })
+      .catch(() => {
+        Swal.fire("Error", "Google login failed", "error");
       });
-
-      navigate(location.state || "/");
-    });
   };
 
   return (
@@ -68,7 +83,7 @@ const Login = () => {
         className="w-full max-w-md rounded-2xl backdrop-blur-xl bg-base-100/80 shadow-xl border border-base-300"
       >
         <div className="p-8">
-          {/* TITLE */}
+          {/* ===== TITLE ===== */}
           <motion.h2
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -78,7 +93,7 @@ const Login = () => {
             Welcome Back
           </motion.h2>
 
-          {/* FORM */}
+          {/* ===== FORM ===== */}
           <form onSubmit={handleLogin} className="space-y-4">
             <input
               name="email"
@@ -97,52 +112,56 @@ const Login = () => {
             />
 
             <div className="text-right">
-            <Link
-              to="/auth/forgot-password"
-              state={{ email: "" }}
-              className="text-sm text-primary hover:underline"
-            >
-              Forgot password?
-            </Link>
-          </div>
+              <Link
+                to="/auth/forgot-password"
+                className="text-sm text-primary hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
 
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="w-full py-3 rounded-xl font-semibold text-white
+              className="
+                w-full py-3 rounded-xl font-semibold text-white
                 bg-gradient-to-r from-primary to-secondary
-                shadow-lg hover:shadow-primary/40 transition-all"
+                shadow-lg hover:shadow-primary/40 transition-all
+              "
             >
               Login
             </motion.button>
           </form>
 
-          {/* DIVIDER */}
+          {/* ===== DIVIDER ===== */}
           <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px bg-base-300"></div>
             <span className="text-sm text-base-content/60">or</span>
             <div className="flex-1 h-px bg-base-300"></div>
           </div>
 
-          {/* GOOGLE LOGIN */}
+          {/* ===== GOOGLE LOGIN ===== */}
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={handleGoogleLogin}
-            className="w-full py-3 rounded-xl font-medium
+            className="
+              w-full py-3 rounded-xl font-medium
               flex items-center justify-center gap-3
               border border-base-300 bg-base-100
-              hover:bg-base-200 transition-all"
+              hover:bg-base-200 transition-all
+            "
           >
             <FaGoogle className="text-lg" />
             Continue with Google
           </motion.button>
 
-          {/* FOOTER */}
+          {/* ===== FOOTER ===== */}
           <p className="text-center mt-6 text-sm text-base-content/70">
             New to Learnify?{" "}
             <Link
               to="/auth/register"
+              state={{ from }}
               className="font-semibold text-primary hover:underline"
             >
               Create an account
