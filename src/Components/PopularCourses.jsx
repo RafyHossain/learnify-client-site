@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import CourseCard from "./CourseCard";
 import { motion } from "framer-motion";
+import Loading from "./Loading";
 
 const PopularCourses = () => {
   const [popularCourses, setPopularCourses] = useState([]);
@@ -19,7 +20,7 @@ const PopularCourses = () => {
   }, []);
 
   if (loading) {
-    return <p className="text-center mt-10">Loading...</p>;
+    return <Loading></Loading>;
   }
 
   return (
