@@ -87,7 +87,7 @@ const CourseCard = ({ course }) => {
           )}
         </div>
 
-        {/* ================= BUTTON (ALWAYS BOTTOM) ================= */}
+        {/* ================= BUTTON  ================= */}
         <Link
           to={`/courses/${_id}`}
           className="

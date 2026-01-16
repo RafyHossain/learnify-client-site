@@ -33,7 +33,7 @@ const UpdateCourseModal = ({ course, onClose, onUpdate }) => {
         showConfirmButton: false,
       });
 
-      onUpdate({ ...course, ...updatedData }); // 🔥 instant UI update
+      onUpdate({ ...course, ...updatedData }); //  instant UI update
       onClose();
     } catch {
       Swal.fire("Error", "Failed to update course", "error");

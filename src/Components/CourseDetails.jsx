@@ -12,7 +12,7 @@ const CourseDetails = () => {
   const [course, setCourse] = useState(null);
   const [isEnrolled, setIsEnrolled] = useState(false);
 
-  /* ✅ always open from top */
+  /* always open from top */
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [id]);

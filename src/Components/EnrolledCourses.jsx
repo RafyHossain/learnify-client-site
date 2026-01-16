@@ -53,9 +53,16 @@ const EnrolledCourses = () => {
 
       {/* ===== HEADER BAR ===== */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-        <h2 className="text-2xl font-bold">
-          My Enrolled Courses ({enrolledCourses.length})
-        </h2>
+        
+         <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="text-4xl font-extrabold text-center mb-12
+        bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+      >
+        Enrolled Courses ({enrolledCourses.length})
+      </motion.h1>
 
         <motion.button
           whileHover={{ scale: 1.05 }}
@@ -70,7 +77,7 @@ const EnrolledCourses = () => {
             transition-all
           "
         >
-          Enroll More <FaArrowRight className="text-xs" />
+          Enroll More Course
         </motion.button>
       </div>
 

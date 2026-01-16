@@ -8,6 +8,7 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import logo from "../assets/logo.png"; //  place your image here
 
 const Footer = () => {
   return (
@@ -15,27 +16,38 @@ const Footer = () => {
       {/* ================= MAIN ================= */}
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-14">
 
-        {/* BRAND */}
+        {/* ================= BRAND ================= */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
         >
-          <h2 className="text-2xl font-extrabold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Learnify
-          </h2>
+          <div className="flex items-center gap-3 mb-4">
+            <img
+              src={logo}
+              alt="Learnify Logo"
+              className="w-17 h-17 rounded-xl object-contain"
+            />
+
+            <h2 className="text-2xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Learnify
+            </h2>
+          </div>
 
           <p className="text-sm leading-relaxed text-base-content/70 max-w-xs">
             Learnify is a modern learning platform where learners and instructors
-            connect, share skills, and grow together through real-world knowledge.
+            connect, share skills, and grow together through real-world knowledge
+            and practical courses.
           </p>
         </motion.div>
 
-        {/* QUICK LINKS */}
+        {/* ================= QUICK LINKS ================= */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
+          transition={{ duration: 0.55 }}
+          viewport={{ once: true }}
         >
           <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
 
@@ -49,7 +61,7 @@ const Footer = () => {
               <li key={i}>
                 <Link
                   to={link.to}
-                  className="text-base-content/70 hover:text-primary transition-colors"
+                  className="inline-block text-base-content/70 hover:text-primary hover:translate-x-1 transition-all"
                 >
                   {link.name}
                 </Link>
@@ -58,11 +70,12 @@ const Footer = () => {
           </ul>
         </motion.div>
 
-        {/* SUPPORT */}
+        {/* ================= SUPPORT ================= */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
         >
           <h3 className="font-semibold text-lg mb-4">Support</h3>
 
@@ -75,7 +88,7 @@ const Footer = () => {
             ].map((item, i) => (
               <li
                 key={i}
-                className="hover:text-primary transition cursor-pointer"
+                className="hover:text-primary hover:translate-x-1 transition-all cursor-pointer"
               >
                 {item}
               </li>
@@ -83,11 +96,12 @@ const Footer = () => {
           </ul>
         </motion.div>
 
-        {/* CONTACT */}
+        {/* ================= CONTACT ================= */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55 }}
+          transition={{ duration: 0.65 }}
+          viewport={{ once: true }}
         >
           <h3 className="font-semibold text-lg mb-4">Contact</h3>
 
@@ -108,13 +122,14 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* SOCIAL ICONS */}
+          {/* ================= SOCIAL ================= */}
           <div className="flex gap-4 mt-6">
             {[FaFacebookF, FaTwitter, FaYoutube].map((Icon, i) => (
               <motion.a
                 key={i}
-                whileHover={{ scale: 1.15 }}
+                whileHover={{ scale: 1.15, rotate: 3 }}
                 whileTap={{ scale: 0.9 }}
+                href="#"
                 className="
                   w-10 h-10 rounded-full flex items-center justify-center
                   bg-base-100 border border-base-300 text-base-content/70
@@ -130,7 +145,7 @@ const Footer = () => {
         </motion.div>
       </div>
 
-      {/* ================= BOTTOM ================= */}
+      {/* ================= BOTTOM BAR ================= */}
       <div className="border-t border-base-300">
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col sm:flex-row gap-2 justify-between items-center text-sm text-base-content/60">
           <p>

@@ -38,7 +38,7 @@ const router = createBrowserRouter([
         element: <Courses />,
       },
       {
-        path: "courses/:id", // ✅ RELATIVE PATH
+        path: "courses/:id", // RELATIVE PATH
         element: (
           <PrivateRoutes>
             <CourseDetails />
@@ -58,7 +58,7 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        index: true, // 🔥 DEFAULT PAGE
+        index: true, // DEFAULT PAGE
         element: <EnrolledCourses />,
       },
       {

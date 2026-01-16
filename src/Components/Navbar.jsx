@@ -7,8 +7,9 @@ import logo from "../assets/logo.png";
 import { AuthContext } from "../Context/AuthProvider";
 
 const Navbar = () => {
-  const { user, logOut } = useContext(AuthContext);
+  const { user, logOut, loading } = useContext(AuthContext);
 
+  /* ================= LOGOUT ================= */
   const handleLogOut = () => {
     logOut()
       .then(() => {
@@ -22,6 +23,19 @@ const Navbar = () => {
       .catch(console.log);
   };
 
+  /* ================= LOADING STATE ================= */
+  if (loading) {
+    return (
+      <header className="sticky top-0 z-50 bg-base-100 border-b border-base-300">
+        <div className="navbar max-w-7xl mx-auto px-4">
+          <div className="navbar-start">
+            <span className="font-bold text-lg">Learnify</span>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header className="sticky top-0 z-50 backdrop-blur-xl bg-base-100/70 border-b border-base-300">
       <div className="navbar max-w-7xl mx-auto px-4 md:px-8">
@@ -32,10 +46,9 @@ const Navbar = () => {
             <img
               src={logo}
               alt="Learnify"
-              className="w-14 h-14 rounded-xl object-cover"
+              className="w-12 h-12 rounded-xl object-cover"
             />
 
-            {/* Animated Gradient Brand Name */}
             <span
               className="
                 text-xl font-extrabold
@@ -50,7 +63,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* ================= CENTER : ANIMATED TOGGLE ================= */}
+        {/* ================= CENTER : MENU ================= */}
         <div className="navbar-center hidden lg:flex">
           <div className="relative flex gap-2 bg-base-200/70 backdrop-blur-md p-1.5 rounded-full">
 
@@ -65,7 +78,6 @@ const Navbar = () => {
                     <motion.span
                       layoutId="nav-pill"
                       className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-secondary"
-                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
                     />
                   )}
                   <span
@@ -90,7 +102,6 @@ const Navbar = () => {
                     <motion.span
                       layoutId="nav-pill"
                       className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-secondary"
-                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
                     />
                   )}
                   <span
@@ -116,7 +127,6 @@ const Navbar = () => {
                       <motion.span
                         layoutId="nav-pill"
                         className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-secondary"
-                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
                       />
                     )}
                     <span
@@ -137,6 +147,7 @@ const Navbar = () => {
         <div className="navbar-end gap-3">
           {user ? (
             <>
+              {/* USER AVATAR */}
               <div
                 className="tooltip tooltip-bottom"
                 data-tip={user?.displayName || "User"}
@@ -145,7 +156,8 @@ const Navbar = () => {
                   <img
                     src={user.photoURL}
                     alt="User"
-                    className="w-10 h-10 rounded-full object-cover border"
+                    referrerPolicy="no-referrer"
+                    className="w-10 h-10 rounded-full object-cover border border-primary"
                   />
                 ) : (
                   <div className="w-10 h-10 rounded-full border flex items-center justify-center">
@@ -154,12 +166,15 @@ const Navbar = () => {
                 )}
               </div>
 
+              {/* LOGOUT */}
               <button
                 onClick={handleLogOut}
-                className="px-5 py-2 rounded-xl text-sm font-medium
+                className="
+                  px-5 py-2 rounded-xl text-sm font-medium
                   bg-gradient-to-r from-primary to-secondary
                   text-white shadow-md hover:shadow-xl hover:scale-[1.03]
-                  transition-all"
+                  transition-all
+                "
               >
                 Log out
               </button>
@@ -168,18 +183,23 @@ const Navbar = () => {
             <>
               <Link
                 to="/auth/login"
-                className="px-5 py-2 rounded-xl text-sm font-medium
-                  border border-primary/30 hover:border-primary transition-all"
+                className="
+                  px-5 py-2 rounded-xl text-sm font-medium
+                  border border-primary/30 hover:border-primary
+                  transition-all
+                "
               >
                 Login
               </Link>
 
               <Link
                 to="/auth/register"
-                className="px-5 py-2 rounded-xl text-sm font-medium
+                className="
+                  px-5 py-2 rounded-xl text-sm font-medium
                   bg-gradient-to-r from-primary to-secondary
                   text-white shadow-md hover:shadow-xl hover:scale-[1.03]
-                  transition-all"
+                  transition-all
+                "
               >
                 Sign Up
               </Link>

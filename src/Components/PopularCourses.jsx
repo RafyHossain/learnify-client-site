@@ -11,12 +11,12 @@ const PopularCourses = () => {
   useEffect(() => {
     axios.get("http://localhost:3000/courses").then((res) => {
       const featuredLatest = res.data
-        .filter(course => course.isFeatured === true)   // ✅ only featured
+        .filter(course => course.isFeatured === true)   //  only featured
         .sort(
           (a, b) =>
             new Date(b.createdAt) - new Date(a.createdAt)
-        )                                               // ✅ latest first
-        .slice(0, 6);                                   // ✅ top 6
+        )                                               // latest first
+        .slice(0, 6);                                   //  top 6
 
       setPopularCourses(featuredLatest);
       setLoading(false);
@@ -29,15 +29,18 @@ const PopularCourses = () => {
     <section className="py-20 bg-base-100">
       <div className="max-w-7xl mx-auto px-6">
         
-        {/* TITLE */}
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-3xl font-bold text-center mb-12"
-        >
-          Featured Courses
-        </motion.h2>
+       
+         {/* ===== TITLE ===== */}
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="text-4xl font-extrabold text-center mb-12
+        bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+      >
+         Featured Courses
+      </motion.h1>
+      
 
         {/* GRID */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">

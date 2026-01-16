@@ -11,10 +11,10 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ✅ Redirect path (course details or home)
+  // Redirect path (course details or home)
   const from = location.state?.from || "/";
 
-  // ✅ Scroll to top when login page loads
+  // Scroll to top when login page loads
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
