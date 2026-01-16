@@ -1,106 +1,209 @@
 import { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { AuthContext } from "../Context/AuthProvider";
-import { Link } from "react-router-dom";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import axiosPublic from "../hooks/useAxiosPublic";
 import Swal from "sweetalert2";
+import Loading from "./Loading";
+import UpdateCourseModal from "./UpdateCourseModal";
+import AddCourseModal from "./AddCourseModal";
+import { FaTrash, FaEdit, FaArrowRight, FaEye } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const MyCourses = () => {
   const { user } = useContext(AuthContext);
-  const [courses, setCourses] = useState([]);
+  const navigate = useNavigate();
 
-  const fetchMyCourses = () => {
-    axios
-      .get(`http://localhost:3000/my-courses/${user.email}`)
-      .then((res) => setCourses(res.data));
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+
+  /* ================= FETCH ================= */
+  const fetchMyCourses = async () => {
+    if (!user?.email) return;
+    setLoading(true);
+    const res = await axiosPublic.get(`/my-courses/${user.email}`);
+    setCourses(res.data);
+    setLoading(false);
   };
 
   useEffect(() => {
-    if (!user?.email) return;
     fetchMyCourses();
   }, [user?.email]);
 
+  /* ================= DELETE ================= */
   const handleDelete = (id) => {
     Swal.fire({
-      title: "Delete Course?",
+      title: "Delete this course?",
       text: "This action cannot be undone!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#ef4444",
       confirmButtonText: "Yes, Delete",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(`http://localhost:3000/courses/${id}`)
-          .then(() => {
-            Swal.fire("Deleted!", "Course removed successfully.", "success");
-            fetchMyCourses(); // ✅ AUTO UPDATE
-          });
+      confirmButtonColor: "#ef4444",
+    }).then((res) => {
+      if (res.isConfirmed) {
+        axiosPublic.delete(`/courses/${id}`).then(() => {
+          setCourses(courses.filter((c) => c._id !== id));
+          Swal.fire("Deleted!", "Course removed successfully.", "success");
+        });
       }
     });
   };
 
+  if (loading) return <Loading />;
+
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">My Added Courses</h2>
 
-      {courses.length === 0 ? (
-        <p className="text-center opacity-60">
-          You haven’t added any course yet.
-        </p>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="overflow-x-auto bg-base-100 rounded-2xl shadow-lg border"
+      {/* ================= HEADER ================= */}
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+        <h2 className="text-2xl font-bold">
+          My Added Courses ({courses.length})
+        </h2>
+
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() =>
+            document.getElementById("addCourseModal").showModal()
+          }
+          className="
+            flex items-center gap-2
+            px-5 py-2 rounded-xl
+            text-sm font-medium text-white
+            bg-gradient-to-r from-primary to-secondary
+            shadow-md hover:shadow-xl
+            transition-all
+          "
         >
-          <table className="table">
-            <thead className="bg-base-200">
-              <tr>
-                <th>#</th>
-                <th>Title</th>
-                <th>Price</th>
-                <th>Category</th>
-                <th className="text-center">Actions</th>
-              </tr>
-            </thead>
+          Add New Course <FaArrowRight className="text-xs" />
+        </motion.button>
+      </div>
 
-            <tbody>
-              {courses.map((course, index) => (
-                <tr key={course._id}>
-                  <td>{index + 1}</td>
-                  <td className="font-semibold">{course.title}</td>
-                  <td className="text-primary font-semibold">${course.price}</td>
-                  <td>{course.category}</td>
-                  <td className="flex justify-center gap-3">
-                    <Link
-                      to={`/courses/${course._id}`}
-                      className="btn btn-sm btn-outline"
-                    >
-                      <FaEye />
-                    </Link>
+      {/* ================= TABLE ================= */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="
+          overflow-x-auto
+          bg-base-100/80 backdrop-blur
+          rounded-2xl shadow-lg border
+        "
+      >
+        <table className="table">
+          <thead className="bg-base-200 text-sm">
+            <tr>
+              <th>#</th>
+              <th>Course Title</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th className="text-center">Actions</th>
+            </tr>
+          </thead>
 
-                    <Link
-                      to={`/dashboard/update-course/${course._id}`}
-                      className="btn btn-sm btn-info text-white"
-                    >
-                      <FaEdit />
-                    </Link>
+          <tbody>
+            {courses.map((course, index) => (
+              <motion.tr
+                key={course._id}
+                whileHover={{ backgroundColor: "rgba(0,0,0,0.03)" }}
+              >
+                <td className="font-medium">{index + 1}</td>
 
-                    <button
-                      onClick={() => handleDelete(course._id)}
-                      className="btn btn-sm btn-error text-white"
-                    >
-                      <FaTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </motion.div>
+                <td className="font-semibold">
+                  {course.title}
+                </td>
+
+                <td className="text-sm opacity-80">
+                  {course.category}
+                </td>
+
+                <td className="text-primary font-semibold">
+                  ${course.price}
+                </td>
+
+                <td>
+  <div className="flex items-center justify-center gap-3">
+
+    {/* VIEW */}
+    <button
+      onClick={() => navigate(`/courses/${course._id}`)}
+      className="
+        flex items-center justify-center
+        w-9 h-9 rounded-full
+        bg-primary/10 text-primary
+        hover:bg-primary hover:text-white
+        transition-all duration-200
+      "
+      title="View"
+    >
+      <FaEye />
+    </button>
+
+    {/* UPDATE */}
+    <button
+      onClick={() => setSelectedCourse(course)}
+      className="
+        flex items-center justify-center
+        w-9 h-9 rounded-full
+        bg-blue-500/10 text-blue-500
+        hover:bg-blue-500 hover:text-white
+        transition-all duration-200
+      "
+      title="Edit"
+    >
+      <FaEdit />
+    </button>
+
+    {/* DELETE */}
+    <button
+      onClick={() => handleDelete(course._id)}
+      className="
+        flex items-center justify-center
+        w-9 h-9 rounded-full
+        bg-red-500/10 text-red-500
+        hover:bg-red-500 hover:text-white
+        transition-all duration-200
+      "
+      title="Delete"
+    >
+      <FaTrash />
+    </button>
+
+  </div>
+</td>
+
+              </motion.tr>
+            ))}
+          </tbody>
+        </table>
+
+        {courses.length === 0 && (
+          <div className="p-10 text-center opacity-60">
+            <p className="text-lg font-medium">
+              You haven't added any course yet.
+            </p>
+            <p className="text-sm mt-1">
+              Click <b>Add New Course</b> to get started
+            </p>
+          </div>
+        )}
+      </motion.div>
+
+      {/* ================= MODALS ================= */}
+      <AddCourseModal onAdded={fetchMyCourses} />
+
+      {selectedCourse && (
+        <UpdateCourseModal
+          course={selectedCourse}
+          onClose={() => setSelectedCourse(null)}
+          onUpdate={(updated) =>
+            setCourses(
+              courses.map((c) =>
+                c._id === updated._id ? updated : c
+              )
+            )
+          }
+        />
       )}
     </div>
   );

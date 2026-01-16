@@ -9,19 +9,21 @@ const PopularCourses = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get("http://localhost:3000/courses").then(res => {
-      const sorted = res.data
-        .sort((a, b) => b.enrolledCount - a.enrolledCount)
-        .slice(0, 6);
+    axios.get("http://localhost:3000/courses").then((res) => {
+      const featuredLatest = res.data
+        .filter(course => course.isFeatured === true)   // ✅ only featured
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt) - new Date(a.createdAt)
+        )                                               // ✅ latest first
+        .slice(0, 6);                                   // ✅ top 6
 
-      setPopularCourses(sorted);
+      setPopularCourses(featuredLatest);
       setLoading(false);
     });
   }, []);
 
-  if (loading) {
-    return <Loading></Loading>;
-  }
+  if (loading) return <Loading />;
 
   return (
     <section className="py-20 bg-base-100">
@@ -34,7 +36,7 @@ const PopularCourses = () => {
           transition={{ duration: 0.5 }}
           className="text-3xl font-bold text-center mb-12"
         >
-           Popular Courses
+          Featured Courses
         </motion.h2>
 
         {/* GRID */}

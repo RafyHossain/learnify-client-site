@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../Context/AuthProvider";
-import { FaTrash, FaArrowRight } from "react-icons/fa";
+import { FaTrash, FaArrowRight, FaEye } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -88,7 +88,7 @@ const EnrolledCourses = () => {
               <th>Course</th>
               <th>Price</th>
               <th>Enrolled Date</th>
-              <th className="text-center">Action</th>
+              <th className="text-center">Actions</th>
             </tr>
           </thead>
 
@@ -97,7 +97,6 @@ const EnrolledCourses = () => {
               <motion.tr
                 key={item._id}
                 whileHover={{ backgroundColor: "rgba(0,0,0,0.03)" }}
-                transition={{ duration: 0.2 }}
               >
                 <td className="font-medium">{index + 1}</td>
 
@@ -113,19 +112,43 @@ const EnrolledCourses = () => {
                   {new Date(item.enrolledAt).toLocaleDateString()}
                 </td>
 
-                <td className="text-center">
-                  <button
-                    onClick={() => handleDelete(item._id)}
-                    className="
-                      inline-flex items-center justify-center
-                      w-9 h-9 rounded-full
-                      bg-red-500/10 text-red-500
-                      hover:bg-red-500 hover:text-white
-                      transition-all
-                    "
-                  >
-                    <FaTrash />
-                  </button>
+                {/* ACTIONS */}
+                <td>
+                  <div className="flex justify-center items-center gap-3">
+
+                    {/* VIEW */}
+                    <button
+                      onClick={() =>
+                        navigate(`/courses/${item.course?._id}`)
+                      }
+                      className="
+                        flex items-center justify-center
+                        w-9 h-9 rounded-full
+                        bg-primary/10 text-primary
+                        hover:bg-primary hover:text-white
+                        transition-all
+                      "
+                      title="View Course"
+                    >
+                      <FaEye />
+                    </button>
+
+                    {/* UNENROLL */}
+                    <button
+                      onClick={() => handleDelete(item._id)}
+                      className="
+                        flex items-center justify-center
+                        w-9 h-9 rounded-full
+                        bg-red-500/10 text-red-500
+                        hover:bg-red-500 hover:text-white
+                        transition-all
+                      "
+                      title="Unenroll"
+                    >
+                      <FaTrash />
+                    </button>
+
+                  </div>
                 </td>
               </motion.tr>
             ))}
@@ -138,7 +161,7 @@ const EnrolledCourses = () => {
               You are not enrolled in any course yet.
             </p>
             <p className="text-sm mt-1">
-              Click <b>Enroll More</b> to start learning 
+              Click <b>Enroll More</b> to start learning
             </p>
           </div>
         )}
