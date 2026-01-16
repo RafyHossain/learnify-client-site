@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { FaTimes, FaImage } from "react-icons/fa";
+import { FaTimes, FaImage, FaUser } from "react-icons/fa";
 import { useContext, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -23,10 +23,12 @@ const AddCourseModal = ({ onAdded }) => {
       category: form.category.value,
       description: form.description.value,
       isFeatured: form.isFeatured.checked,
+
+      //  AUTO-FILLED FROM FIREBASE
       instructor: {
-        name: user.displayName,
-        email: user.email,
-        photo: user.photoURL,
+        name: user?.displayName,
+        email: user?.email,
+        photo: user?.photoURL,
       },
     };
 
@@ -59,11 +61,7 @@ const AddCourseModal = ({ onAdded }) => {
       >
         {/* ===== HEADER ===== */}
         <div className="flex justify-between items-center mb-6">
-          <h3 className="
-            text-2xl font-extrabold
-            bg-gradient-to-r from-primary to-secondary
-            bg-clip-text text-transparent
-          ">
+          <h3 className="text-2xl  font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             Add New Course
           </h3>
 
@@ -83,14 +81,35 @@ const AddCourseModal = ({ onAdded }) => {
           onSubmit={handleAddCourse}
           className="grid grid-cols-1 md:grid-cols-2 gap-5"
         >
+
+          {/* ================= INSTRUCTOR INFO (AUTO-FILL) ================= */}
+          <div className="col-span-2 bg-base-200/60 p-4 rounded-xl flex items-center gap-4">
+            {user?.photoURL ? (
+              <img
+                src={user.photoURL}
+                alt="Instructor"
+                className="w-14 h-14 rounded-full object-cover border"
+              />
+            ) : (
+              <div className="w-14 h-14 rounded-full border flex items-center justify-center">
+                <FaUser />
+              </div>
+            )}
+
+            <div>
+              <p className="font-semibold">{user?.displayName}</p>
+              <p className="text-sm text-base-content/70">{user?.email}</p>
+            </div>
+          </div>
+
           {/* TITLE */}
-          <div className="relative col-span-2">
+          <div className="col-span-2">
             <input
-            name="title"
-            placeholder="Course Title"
-            className="input input-bordered w-full rounded-xl"
-            required
-          />
+              name="title"
+              placeholder="Course Title"
+              className="input input-bordered w-full rounded-xl"
+              required
+            />
           </div>
 
           {/* IMAGE */}
@@ -143,16 +162,16 @@ const AddCourseModal = ({ onAdded }) => {
           </label>
 
           {/* DESCRIPTION */}
-         <div className="relative col-span-2">
-           <textarea
-            name="description"
-            placeholder="Course Description"
-            className="textarea textarea-bordered w-full rounded-xl"
-            rows={3}
-          />
-         </div>
+          <div className="col-span-2">
+            <textarea
+              name="description"
+              placeholder="Course Description"
+              className="textarea textarea-bordered w-full rounded-xl"
+              rows={3}
+            />
+          </div>
 
-          {/* SUBMIT BUTTON */}
+          {/* SUBMIT */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

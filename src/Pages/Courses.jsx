@@ -24,19 +24,19 @@ const Courses = () => {
   useEffect(() => {
     let data = [...courses];
 
-    // 🔍 SEARCH
+    // SEARCH
     if (search) {
       data = data.filter((course) =>
         course.title.toLowerCase().includes(search.toLowerCase())
       );
     }
 
-    // 🗂 CATEGORY
+    // CATEGORY
     if (category !== "all") {
       data = data.filter((course) => course.category === category);
     }
 
-    // 💰 SORT
+    //  SORT
     if (sort === "priceLow") {
       data.sort((a, b) => a.price - b.price);
     }

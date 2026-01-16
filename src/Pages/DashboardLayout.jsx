@@ -17,6 +17,7 @@ import {
 } from "react-icons/fa";
 import AddCourseModal from "../Components/AddCourseModal";
 import { AuthContext } from "../Context/AuthProvider";
+import Navbar from "../Components/Navbar";
 
 const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -38,7 +39,10 @@ const DashboardLayout = () => {
     "text-primary-content font-semibold";
 
   return (
-    <div className="min-h-screen flex bg-base-100">
+   <div>
+    <Navbar></Navbar>
+     <div className="min-h-screen flex bg-base-100">
+      
       {/* ================= SIDEBAR ================= */}
       <motion.aside
         animate={{ width: collapsed ? 80 : 260 }}
@@ -180,6 +184,7 @@ const DashboardLayout = () => {
       {/* ================= MODAL ================= */}
       <AddCourseModal />
     </div>
+   </div>
   );
 };
 
