@@ -35,7 +35,7 @@ const Navbar = () => {
               className="w-14 h-14 rounded-xl object-cover"
             />
 
-            {/* 🔥 Animated Gradient Brand Name */}
+            {/* Animated Gradient Brand Name */}
             <span
               className="
                 text-xl font-extrabold

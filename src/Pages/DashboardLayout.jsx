@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   NavLink,
   Outlet,
@@ -16,11 +16,13 @@ import {
   FaHome,
 } from "react-icons/fa";
 import AddCourseModal from "../Components/AddCourseModal";
+import { AuthContext } from "../Context/AuthProvider";
 
 const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user} = useContext(AuthContext);
 
   const openModal = () => {
     document.getElementById("addCourseModal").showModal();
@@ -45,11 +47,17 @@ const DashboardLayout = () => {
       >
         {/* HEADER */}
         <div className="flex items-center justify-between mb-6">
-          {!collapsed && (
-            <h2 className="text-xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              My DashBoard
-            </h2>
-          )}
+         {!collapsed && (
+  <div>
+    <h2 className="text-xl text-center font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+      My Dashboard
+    </h2>
+
+    <p className="text-sm text-center mt-1 text-base-content opacity-70">
+      {user?.displayName}
+    </p>
+  </div>
+)}
 
           <button
             onClick={() => setCollapsed(!collapsed)}
