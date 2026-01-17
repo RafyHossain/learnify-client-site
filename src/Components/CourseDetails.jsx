@@ -18,13 +18,13 @@ const CourseDetails = () => {
   }, [id]);
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/courses/${id}`).then(res => {
+    axios.get(`https://learnify-server-omega.vercel.app/courses/${id}`).then(res => {
       setCourse(res.data);
     });
 
     if (user?.email) {
       axios
-        .get(`http://localhost:3000/enroll/${user.email}`)
+        .get(`https://learnify-server-omega.vercel.app/enroll/${user.email}`)
         .then(res => {
           const enrolled = res.data.find(e => e.courseId === id);
           if (enrolled) setIsEnrolled(true);
@@ -33,7 +33,7 @@ const CourseDetails = () => {
   }, [id, user?.email]);
 
   const handleEnroll = async () => {
-    await axios.post("http://localhost:3000/enroll", {
+    await axios.post("https://learnify-server-omega.vercel.app/enroll", {
       courseId: course._id,
       studentEmail: user.email,
     });

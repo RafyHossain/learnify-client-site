@@ -31,12 +31,12 @@ const Analytics = () => {
 
     // student analytics
     axios
-      .get(`http://localhost:3000/enroll/${user.email}`)
+      .get(`https://learnify-server-omega.vercel.app/enroll/${user.email}`)
       .then((res) => setEnrollments(res.data));
 
     // instructor analytics
     axios
-      .get(`http://localhost:3000/my-courses/${user.email}`)
+      .get(`https://learnify-server-omega.vercel.app/my-courses/${user.email}`)
       .then((res) => setMyCourses(res.data));
   }, [user?.email]);
 

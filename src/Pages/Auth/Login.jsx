@@ -4,7 +4,8 @@ import { AuthContext } from "../../Context/AuthProvider";
 import axiosPublic from "../../hooks/useAxiosPublic";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
-import { FaGoogle } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+
 
 const Login = () => {
   const { logIn, googleLogIn, setUser } = useContext(AuthContext);
@@ -152,7 +153,7 @@ const Login = () => {
               hover:bg-base-200 transition-all
             "
           >
-            <FaGoogle className="text-lg" />
+            <FcGoogle className="text-lg" />
             Continue with Google
           </motion.button>
 

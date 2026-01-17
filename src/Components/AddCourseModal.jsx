@@ -33,7 +33,7 @@ const AddCourseModal = ({ onAdded }) => {
     };
 
     try {
-      await axios.post("http://localhost:3000/courses", course);
+      await axios.post("https://learnify-server-omega.vercel.app/courses", course);
       toast.success("Course added successfully ✅");
 
       form.reset();

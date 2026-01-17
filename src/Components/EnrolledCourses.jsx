@@ -17,11 +17,11 @@ const EnrolledCourses = () => {
     if (!user?.email) return;
 
     axios
-      .get(`http://localhost:3000/enroll/${user.email}`)
+      .get(`https://learnify-server-omega.vercel.app/enroll/${user.email}`)
       .then(res => setEnrollments(res.data));
 
     axios
-      .get("http://localhost:3000/courses")
+      .get("https://learnify-server-omega.vercel.app/courses")
       .then(res => setCourses(res.data));
   }, [user?.email]);
 
@@ -35,7 +35,7 @@ const EnrolledCourses = () => {
       confirmButtonColor: "#ef4444",
     }).then(result => {
       if (result.isConfirmed) {
-        axios.delete(`http://localhost:3000/enroll/${id}`).then(() => {
+        axios.delete(`https://learnify-server-omega.vercel.app/enroll/${id}`).then(() => {
           setEnrollments(enrollments.filter(e => e._id !== id));
           Swal.fire("Removed!", "Enrollment deleted.", "success");
         });

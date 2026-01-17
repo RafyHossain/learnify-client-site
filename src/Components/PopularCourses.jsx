@@ -30,7 +30,7 @@ const PopularCourses = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get("http://localhost:3000/courses").then((res) => {
+    axios.get("https://learnify-server-omega.vercel.app/courses").then((res) => {
       const featuredLatest = res.data
         .filter(course => course.isFeatured === true)
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))

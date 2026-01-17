@@ -14,7 +14,7 @@ const Courses = () => {
 
   /* ===== FETCH COURSES ===== */
   useEffect(() => {
-    axios.get("http://localhost:3000/courses").then((res) => {
+    axios.get("https://learnify-server-omega.vercel.app/courses").then((res) => {
       setCourses(res.data);
       setFilteredCourses(res.data);
     });

@@ -22,6 +22,7 @@ import Analytics from "../Components/Analytics";
 
 /* ========== Routes ========== */
 import PrivateRoutes from "./PrivateRoutes";
+import ErrorPage from "../Components/ErrorPage";
 
 const router = createBrowserRouter([
   /* ================= HOME ================= */
@@ -99,11 +100,7 @@ const router = createBrowserRouter([
   /* ================= 404 ================= */
   {
     path: "*",
-    element: (
-      <div className="min-h-screen flex items-center justify-center">
-        <h1 className="text-3xl font-bold">404 | Page Not Found</h1>
-      </div>
-    ),
+    element: <ErrorPage></ErrorPage>,
   },
 ]);
 
